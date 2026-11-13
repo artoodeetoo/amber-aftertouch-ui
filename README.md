@@ -34,4 +34,16 @@ To publish a version, push a tag such as `amber-v0.1.1`. GitHub Actions builds a
 
 For an upstream update, revise the tag and commit in `prepare.sh`, refresh the UI patch against that revision, and verify the player before publishing a new Amber tag.
 
-Amber uses the MIT license. AfterTouch is maintained separately by Tobias Gesellchen and its contributors.
+## Support
+
+Report Amber UI bugs, ask setup questions, or suggest improvements in [Amber Issues](https://github.com/artoodeetoo/amber-aftertouch-ui/issues). Include your Amber version and, for layout bugs, your browser and screen size. For speaker migration or playback issues that also occur with the original player, use [AfterTouch Issues](https://github.com/gesellix/Bose-SoundTouch/issues).
+
+## Contributing
+
+Pull requests for the Amber UI and documentation are welcome. Open an issue first for larger changes so we can discuss the approach. If Amber is useful to you, a GitHub star helps others find it.
+
+## Credits and license
+
+Amber is an independent community UI overlay. Thanks to Tobias Gesellchen and the [AfterTouch contributors](https://github.com/gesellix/Bose-SoundTouch) for maintaining the software Amber builds on.
+
+Amber is available under the [MIT license](LICENSE).
