@@ -1,0 +1,335 @@
+diff --git a/pkg/service/soundtouchweb/static/css/amber.css b/pkg/service/soundtouchweb/static/css/amber.css
+new file mode 100644
+index 00000000..19ce75b0
+--- /dev/null
++++ b/pkg/service/soundtouchweb/static/css/amber.css
+@@ -0,0 +1,124 @@
++/* Theme for the speaker screen. Admin and catalog views use upstream styles. */
++.device-detail {
++    color-scheme: dark;
++    --bg: #131110;
++    --surface: #211e1c;
++    --border: #423933;
++    --text: #fff6ec;
++    --text-dim: #c6b8ab;
++    --accent: #ffc17b;
++    --accent-fg: #21160d;
++    --fav: #ffc17b;
++    --fav-bright: #ffdaab;
++    --danger: #ffaaa0;
++    --success: #8dd6a9;
++    --warning: #ffcd84;
++    --content-icon-filter: brightness(0) invert(1);
++    --content-icon-filter-alt: none;
++    max-width: none;
++    padding: clamp(1rem, 3vw, 2.25rem);
++    padding-bottom: 12rem;
++    border: 1px solid var(--border);
++    border-radius: 1.2rem;
++    color: var(--text);
++    background: radial-gradient(ellipse 80% 24rem at top left, #4c3020, transparent), var(--bg);
++}
++
++.main-content:has(.device-detail) { max-width: 1320px; }
++.device-detail button { touch-action: manipulation; }
++.device-detail :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
++.listening-title { font-size: clamp(1.75rem, 5vw, 3.2rem); line-height: 1.1; letter-spacing: -.04em; }
++.device-detail .section-title { color: var(--text); font-size: 1.1rem; letter-spacing: 0; text-transform: none; }
++.device-detail .preset-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .8rem; }
++.device-detail .preset-slot {
++    flex-direction: column;
++    align-items: stretch;
++    padding: .6rem .6rem 2.2rem;
++    border-radius: .85rem;
++    min-width: 0;
++    border-bottom-color: var(--border);
++}
++.device-detail .preset-thumb {
++    flex: none;
++    width: 100%;
++    height: auto;
++    aspect-ratio: 1;
++    border-radius: .5rem;
++}
++.device-detail .preset-source-label { font-size: .65rem; opacity: 1; }
++.device-detail .preset-name { font-size: .88rem; color: var(--text); }
++.device-detail .preset-slot.active {
++    --accent-fg: #ffd6a4;
++    background: #47301f;
++    border-color: var(--accent);
++    box-shadow: 0 0 1rem #ffab5938;
++}
++.device-detail .preset-slot.active .preset-name { color: var(--accent-fg); }
++.device-detail .preset-num {
++    top: .85rem;
++    right: .85rem;
++    background: #17110e;
++    color: #fff6ec;
++    padding: .16rem .46rem;
++    border-radius: 1rem;
++    opacity: 1;
++    font-size: .75rem;
++}
++.device-detail .preset-slot.active .preset-num { color: #fff6ec; }
++.device-detail .preset-slot-wrap.active .preset-edit-btn,
++.device-detail .preset-slot-wrap.active .preset-save-btn { color: #ffd6a4; }
++.device-detail .preset-edit-wrap { right: 2rem; }
++.device-detail .preset-edit-btn,
++.device-detail .preset-save-btn { min-width: 1.75rem; min-height: 1.75rem; }
++.device-detail .recents-section { margin-top: 2rem; }
++.speaker-options { margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
++.speaker-options > summary { cursor: pointer; font-weight: 600; }
++
++.playback-dock {
++    position: fixed;
++    z-index: 12;
++    bottom: max(.6rem, env(safe-area-inset-bottom));
++    left: 50%;
++    transform: translateX(-50%);
++    width: min(1260px, calc(100% - 1.2rem));
++    display: grid;
++    grid-template-columns: minmax(0, 1fr) minmax(18rem, 1.15fr);
++    align-items: center;
++    border: 1px solid #594334;
++    border-radius: 1rem;
++    background: #211914;
++    box-shadow: 0 8px 32px #0009;
++}
++.playback-dock .now-playing,
++.playback-dock .controls {
++    margin: 0;
++    min-height: 0;
++    border: 0;
++    background: transparent;
++    box-shadow: none;
++}
++.playback-dock .now-playing { padding-right: 2.8rem; }
++.playback-dock .album-art { width: 3.4rem; height: 3.4rem; }
++.playback-dock .transport { justify-content: center; gap: clamp(.15rem, 1vw, .5rem); margin-bottom: .25rem; }
++.playback-dock .ctrl-btn { border-radius: 50%; }
++.playback-dock .play-btn { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
++.playback-dock .now-playing-fav-overlay { top: auto; bottom: calc(100% + 6px); }
++.playback-dock .track-details[open] {
++    max-height: 22vh;
++    overflow: auto;
++}
++
++@media (max-width: 950px) {
++    .device-detail .preset-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
++}
++
++@media (max-width: 640px) {
++    .main-content:has(.device-detail) { padding: .6rem; }
++    .device-detail { padding-bottom: 17rem; }
++    .device-detail .preset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
++    .playback-dock { grid-template-columns: minmax(0, 1fr); }
++    .playback-dock .now-playing { padding-block: .6rem .25rem; }
++    .playback-dock .controls { padding-block: .3rem .65rem; }
++    .playback-dock .ctrl-btn { width: 2.25rem; height: 2.25rem; }
++    .playback-dock .play-btn { width: 2.65rem; height: 2.65rem; }
++}
+diff --git a/pkg/service/soundtouchweb/static/index.html b/pkg/service/soundtouchweb/static/index.html
+index 94f80daf..8d03f2c1 100644
+--- a/pkg/service/soundtouchweb/static/index.html
++++ b/pkg/service/soundtouchweb/static/index.html
+@@ -3,11 +3,12 @@
+     <head>
+         <meta charset="UTF-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+-        <title>AfterTouch</title>
++        <title>AfterTouch · Amber Player</title>
+         <meta name="description" content="AfterTouch — A replacement for Bose SoundTouch cloud services. Control your speakers after the cloud shutdown." />
+         <link rel="icon" type="image/svg+xml" href="/app/static/img/favicon.svg" />
+         <link rel="alternate icon" href="/app/static/img/favicon.ico" />
+         <link rel="stylesheet" href="/app/static/css/app.css" />
++        <link rel="stylesheet" href="/app/static/css/amber.css" />
+         <!--
+         Safari on iPadOS 15 supports native ES modules but not import maps
+         (added in Safari 16.4), which left the page blank there (#649).
+diff --git a/pkg/service/soundtouchweb/static/js/app.js b/pkg/service/soundtouchweb/static/js/app.js
+index 43fbd375..afdcd175 100644
+--- a/pkg/service/soundtouchweb/static/js/app.js
++++ b/pkg/service/soundtouchweb/static/js/app.js
+@@ -467,7 +467,7 @@ export function DeviceDetail({
+     if (!device) {
+         return html`
+             <div class="page-header">
+-                <button class="back-btn" onClick=${onBack}>← Back</button>
++                <button class="back-btn" onClick=${onBack}>← Speakers</button>
+             </div>
+             <p>Device not found.</p>
+         `;
+@@ -544,7 +544,7 @@ export function DeviceDetail({
+     return html`
+         <div class="device-detail">
+             <div class="page-header">
+-                <button class="back-btn" onClick=${onBack}>← Back</button>
++                <button class="back-btn" onClick=${onBack}>← Speakers</button>
+                 <button
+                     class="btn-icon command-btn ${command?.action?.startsWith('power-') ? command.outcome : ''}"
+                     onClick=${togglePower}
+@@ -558,27 +558,7 @@ export function DeviceDetail({
+                     </svg>
+                 </button>
+             </div>
+-            <${NowPlaying} nowPlaying=${device.status?.nowPlaying} deviceId=${deviceId} presets=${device.status?.presets} />
+-            <${Controls}
+-                key=${controlsMode === 'zone' ? controlsTargetKey : deviceId}
+-                deviceId=${deviceId}
+-                device=${device}
+-                devices=${devices}
+-                status=${device.status}
+-                command=${command}
+-                commandBusy=${commandBusy}
+-                commandStatus=${commandStatus}
+-                onTogglePlayback=${togglePlayback}
+-                onToggleMute=${toggleMute}
+-                onToggleShuffle=${toggleShuffle}
+-                onCycleRepeat=${cycleRepeat}
+-                onPreviousTrack=${previousTrack}
+-                onNextTrack=${nextTrack}
+-                onZoneVolumeStart=${beginGroupVolume}
+-                onZoneVolumePreview=${previewGroupVolume}
+-                onZoneVolumeReadback=${reconcileGroupVolume}
+-                onZoneVolumeFailure=${rejectGroupVolumePreview}
+-            />
++            <h1 class="listening-title">${device.info?.name || 'Speaker'}</h1>
+             <${Presets}
+                 deviceId=${deviceId}
+                 status=${device.status}
+@@ -586,33 +566,6 @@ export function DeviceDetail({
+                 commandBusy=${commandBusy}
+                 onSelect=${selectPreset}
+             />
+-            <${Sources}
+-                deviceId=${deviceId}
+-                status=${device.status}
+-                onStatusReadback=${status => onStatusReadback(deviceId, status)}
+-                onNavigate=${onNavigate}
+-            />
+-            <${StereoPair}
+-                deviceId=${deviceId}
+-                device=${device}
+-                devices=${devices}
+-                onChanged=${onDevicesChanged}
+-                notify=${notify}
+-            />
+-            ${isSoundTouch10StereoPair(device) ? html`
+-                <aside class="stereo-pair-note" role="note" aria-label="Stereo pair limitation">
+-                    <strong>AirPlay unavailable while paired.</strong>
+-                    <span>SoundTouch 10 speakers cannot use AirPlay while paired. Unpair them to use AirPlay.</span>
+-                </aside>
+-            ` : null}
+-            <${Zone}
+-                deviceId=${deviceId}
+-                devices=${devices}
+-                onSelectMember=${onSelectZoneMember}
+-                volumePreview=${zoneVolumePreview?.controlId === deviceId
+-                    ? zoneVolumePreview.volumes
+-                    : null}
+-            />
+             <${Recents}
+                 deviceId=${deviceId}
+                 physicalId=${device.info?.device_id}
+@@ -624,27 +577,80 @@ export function DeviceDetail({
+                 commandBusy=${commandBusy}
+                 onPlay=${playRecent}
+             />
+-            ${!device.zone ? html`<${MemberSettings} deviceId=${deviceId} device=${device} nested=${false} />` : null}
+-            ${!device.stereoPair ? html`
+-                <div class="device-management-section">
+-                    <div class="section-title">Device management</div>
+-                    <button type="button"
+-                            class="btn-secondary device-remove-action"
+-                            aria-label=${`Remove ${device.info?.name || deviceId} from AfterTouch`}
+-                            onClick=${() => onRemove(deviceId)}>
+-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+-                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+-                             stroke-linejoin="round" aria-hidden="true">
+-                            <path d="M3 6h18" />
+-                            <path d="M8 6V4h8v2" />
+-                            <path d="M19 6l-1 14H6L5 6" />
+-                            <path d="M10 11v5" />
+-                            <path d="M14 11v5" />
+-                        </svg>
+-                        <span>Remove from AfterTouch</span>
+-                    </button>
+-                </div>
+-            ` : null}
++            <details class="speaker-options">
++                <summary>Speaker settings and sources</summary>
++                <${Sources}
++                    deviceId=${deviceId}
++                    status=${device.status}
++                    onStatusReadback=${status => onStatusReadback(deviceId, status)}
++                    onNavigate=${onNavigate}
++                />
++                <${StereoPair}
++                    deviceId=${deviceId}
++                    device=${device}
++                    devices=${devices}
++                    onChanged=${onDevicesChanged}
++                    notify=${notify}
++                />
++                ${isSoundTouch10StereoPair(device) ? html`
++                    <aside class="stereo-pair-note" role="note" aria-label="Stereo pair limitation">
++                        <strong>AirPlay unavailable while paired.</strong>
++                        <span>SoundTouch 10 speakers cannot use AirPlay while paired. Unpair them to use AirPlay.</span>
++                    </aside>
++                ` : null}
++                <${Zone}
++                    deviceId=${deviceId}
++                    devices=${devices}
++                    onSelectMember=${onSelectZoneMember}
++                    volumePreview=${zoneVolumePreview?.controlId === deviceId
++                        ? zoneVolumePreview.volumes
++                        : null}
++                />
++                ${!device.zone ? html`<${MemberSettings} deviceId=${deviceId} device=${device} nested=${false} />` : null}
++                ${!device.stereoPair ? html`
++                    <div class="device-management-section">
++                        <div class="section-title">Device management</div>
++                        <button type="button"
++                                class="btn-secondary device-remove-action"
++                                aria-label=${`Remove ${device.info?.name || deviceId} from AfterTouch`}
++                                onClick=${() => onRemove(deviceId)}>
++                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
++                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
++                                 stroke-linejoin="round" aria-hidden="true">
++                                <path d="M3 6h18" />
++                                <path d="M8 6V4h8v2" />
++                                <path d="M19 6l-1 14H6L5 6" />
++                                <path d="M10 11v5" />
++                                <path d="M14 11v5" />
++                            </svg>
++                            <span>Remove from AfterTouch</span>
++                        </button>
++                    </div>
++                ` : null}
++            </details>
++            <section class="playback-dock" aria-label="Now playing and controls">
++                <${NowPlaying} nowPlaying=${device.status?.nowPlaying} deviceId=${deviceId} presets=${device.status?.presets} />
++                <${Controls}
++                    key=${controlsMode === 'zone' ? controlsTargetKey : deviceId}
++                    deviceId=${deviceId}
++                    device=${device}
++                    devices=${devices}
++                    status=${device.status}
++                    command=${command}
++                    commandBusy=${commandBusy}
++                    commandStatus=${commandStatus}
++                    onTogglePlayback=${togglePlayback}
++                    onToggleMute=${toggleMute}
++                    onToggleShuffle=${toggleShuffle}
++                    onCycleRepeat=${cycleRepeat}
++                    onPreviousTrack=${previousTrack}
++                    onNextTrack=${nextTrack}
++                    onZoneVolumeStart=${beginGroupVolume}
++                    onZoneVolumePreview=${previewGroupVolume}
++                    onZoneVolumeReadback=${reconcileGroupVolume}
++                    onZoneVolumeFailure=${rejectGroupVolumePreview}
++                />
++            </section>
+         </div>
+     `;
+ }
