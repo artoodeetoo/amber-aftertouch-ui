@@ -42,6 +42,10 @@ Report Amber UI bugs, ask setup questions, or suggest improvements in [Amber Iss
 
 Pull requests for the Amber UI and documentation are welcome. Open an issue first for larger changes so we can discuss the approach. If Amber is useful to you, a GitHub star helps others find it.
 
+## Support Amber
+
+If you enjoy the Amber interface and want to support its maintenance, you can [buy me a coffee](https://buymeacoffee.com/iceman008).
+
 ## Credits and license
 
 Amber is an independent community UI overlay. Thanks to Tobias Gesellchen and the [AfterTouch contributors](https://github.com/gesellix/Bose-SoundTouch) for maintaining the software Amber builds on.
