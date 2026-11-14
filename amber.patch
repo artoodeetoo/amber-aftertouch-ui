@@ -1,9 +1,9 @@
 diff --git a/pkg/service/soundtouchweb/static/css/amber.css b/pkg/service/soundtouchweb/static/css/amber.css
 new file mode 100644
-index 00000000..19ce75b0
+index 00000000..913d671e
 --- /dev/null
 +++ b/pkg/service/soundtouchweb/static/css/amber.css
-@@ -0,0 +1,124 @@
+@@ -0,0 +1,199 @@
 +/* Theme for the speaker screen. Admin and catalog views use upstream styles. */
 +.device-detail {
 +    color-scheme: dark;
@@ -128,6 +128,81 @@ index 00000000..19ce75b0
 +    .playback-dock .ctrl-btn { width: 2.25rem; height: 2.25rem; }
 +    .playback-dock .play-btn { width: 2.65rem; height: 2.65rem; }
 +}
++
++
++.preset-size-picker {
++    display: flex;
++    align-items: center;
++    justify-content: flex-end;
++    flex-wrap: wrap;
++    gap: .5rem;
++    margin-top: .85rem;
++    color: var(--text-dim);
++    font-size: .85rem;
++}
++
++.preset-size-picker select {
++    min-height: 2.5rem;
++    padding: .3rem .65rem;
++    border: 1px solid var(--border);
++    border-radius: .45rem;
++    background: var(--surface);
++    color: var(--text);
++    font: inherit;
++}
++
++.device-detail[data-preset-size="compact"] {
++    --preset-direction: row;
++    --preset-art-size: 2.75rem;
++    --preset-tile-padding: .4rem 1.85rem 1.85rem .4rem;
++    --preset-tile-height: 4.4rem;
++    --preset-tile-align: flex-start;
++    --preset-number-inset: .3rem;
++}
++
++@media (max-width: 1024px) {
++    .device-detail[data-preset-size="auto"] {
++        --preset-direction: row;
++        --preset-art-size: 2.75rem;
++        --preset-tile-padding: .4rem 1.85rem 1.85rem .4rem;
++        --preset-tile-height: 4.4rem;
++        --preset-tile-align: flex-start;
++        --preset-number-inset: .3rem;
++    }
++}
++
++.device-detail .preset-slot {
++    flex-direction: var(--preset-direction, column);
++    align-items: var(--preset-tile-align, stretch);
++    min-height: var(--preset-tile-height, 56px);
++    padding: var(--preset-tile-padding, .6rem .6rem 2.2rem);
++}
++
++.device-detail .preset-thumb { width: var(--preset-art-size, 100%); }
++.device-detail .preset-num {
++    top: var(--preset-number-inset, .85rem);
++    right: var(--preset-number-inset, .85rem);
++}
++
++@media (max-width: 360px) {
++    .device-detail[data-preset-size="auto"] .preset-grid,
++    .device-detail[data-preset-size="compact"] .preset-grid {
++        grid-template-columns: minmax(0, 1fr);
++    }
++}
++
++
++@media (min-width: 951px) and (max-width: 1024px) {
++    .device-detail[data-preset-size="auto"] .preset-grid {
++        grid-template-columns: repeat(3, minmax(0, 1fr));
++    }
++}
++
++@media (min-width: 641px) {
++    .device-detail[data-preset-size="compact"] .preset-grid {
++        grid-template-columns: repeat(3, minmax(0, 1fr));
++    }
++}
 diff --git a/pkg/service/soundtouchweb/static/index.html b/pkg/service/soundtouchweb/static/index.html
 index 94f80daf..8d03f2c1 100644
 --- a/pkg/service/soundtouchweb/static/index.html
@@ -147,10 +222,35 @@ index 94f80daf..8d03f2c1 100644
          Safari on iPadOS 15 supports native ES modules but not import maps
          (added in Safari 16.4), which left the page blank there (#649).
 diff --git a/pkg/service/soundtouchweb/static/js/app.js b/pkg/service/soundtouchweb/static/js/app.js
-index 43fbd375..afdcd175 100644
+index 43fbd375..f5d43956 100644
 --- a/pkg/service/soundtouchweb/static/js/app.js
 +++ b/pkg/service/soundtouchweb/static/js/app.js
-@@ -467,7 +467,7 @@ export function DeviceDetail({
+@@ -326,6 +326,24 @@ export function DeviceDetail({
+     const memberEpochs = controlsMode === 'zone' ? (device.zone.members || []).map(member =>
+         [member.controlId, statusEpoch(devices[member.controlId]?.status)]) : [];
+     const controlsTargetKey = `${deviceId}:${controlsMode}:${statusEpoch(status) ?? ''}:${topologyFingerprint}:${JSON.stringify(memberEpochs)}`;
++    const [presetSize, setPresetSize] = useState(() => {
++        try {
++            const saved = localStorage.getItem('amber-preset-size');
++            return saved === 'compact' || saved === 'large' ? saved : 'auto';
++        } catch {
++            return 'auto';
++        }
++    });
++    function changePresetSize(event) {
++        const size = event.currentTarget.value;
++        setPresetSize(size);
++        try {
++            localStorage.setItem('amber-preset-size', size);
++        } catch {
++            // The selector still works when browser storage is unavailable.
++        }
++    }
++
+     const [zoneVolumePreview, setZoneVolumePreview] = useState(null);
+     const previewExpiryRef = useRef(null);
+ 
+@@ -467,7 +485,7 @@ export function DeviceDetail({
      if (!device) {
          return html`
              <div class="page-header">
@@ -159,16 +259,19 @@ index 43fbd375..afdcd175 100644
              </div>
              <p>Device not found.</p>
          `;
-@@ -544,7 +544,7 @@ export function DeviceDetail({
+@@ -542,9 +560,9 @@ export function DeviceDetail({
+     }
+ 
      return html`
-         <div class="device-detail">
+-        <div class="device-detail">
++        <div class="device-detail" data-preset-size=${presetSize}>
              <div class="page-header">
 -                <button class="back-btn" onClick=${onBack}>← Back</button>
 +                <button class="back-btn" onClick=${onBack}>← Speakers</button>
                  <button
                      class="btn-icon command-btn ${command?.action?.startsWith('power-') ? command.outcome : ''}"
                      onClick=${togglePower}
-@@ -558,27 +558,7 @@ export function DeviceDetail({
+@@ -558,27 +576,15 @@ export function DeviceDetail({
                      </svg>
                  </button>
              </div>
@@ -194,10 +297,18 @@ index 43fbd375..afdcd175 100644
 -                onZoneVolumeFailure=${rejectGroupVolumePreview}
 -            />
 +            <h1 class="listening-title">${device.info?.name || 'Speaker'}</h1>
++            <label class="preset-size-picker">
++                Preset size
++                <select value=${presetSize} onChange=${changePresetSize}>
++                    <option value="auto">Auto</option>
++                    <option value="compact">Compact</option>
++                    <option value="large">Large</option>
++                </select>
++            </label>
              <${Presets}
                  deviceId=${deviceId}
                  status=${device.status}
-@@ -586,33 +566,6 @@ export function DeviceDetail({
+@@ -586,33 +592,6 @@ export function DeviceDetail({
                  commandBusy=${commandBusy}
                  onSelect=${selectPreset}
              />
@@ -231,7 +342,7 @@ index 43fbd375..afdcd175 100644
              <${Recents}
                  deviceId=${deviceId}
                  physicalId=${device.info?.device_id}
-@@ -624,27 +577,80 @@ export function DeviceDetail({
+@@ -624,27 +603,80 @@ export function DeviceDetail({
                  commandBusy=${commandBusy}
                  onPlay=${playRecent}
              />
